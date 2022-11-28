@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>users</title>
+</head>
+<body>
+    <table>
+        <tr>
+
+            {% for key in users[0]|keys %}
+                <th>{{key}}</th>
+            {% endfor %}
+        </tr>
+
+        {% for user in users %}
+            <tr>
+                {% for column in user %}
+                    <td>{{ column }}</td>
+                {% endfor %}
+            </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>
