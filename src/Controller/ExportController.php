@@ -28,21 +28,24 @@ class ExportController extends BaseController
         if($this->hasReachedMaximumExports()){
             return $this->respondWithFailure('maximum exports reached', 400);
         }
+
         return $this->exportData(new ExportCSV(), $userRepository, $request);
     }
 
     #[Route(path: 'api/user/export/pdf')]
-    public function exportPDF(UserRepository $userRepository, Request $request, Environment $twig){
+    public function exportPDF(UserRepository $userRepository, Request $request, ExportPDF $exportPDF){
         if($this->hasReachedMaximumExports()){
             return $this->respondWithFailure('maximum exports reached', 400);
         }
-        return $this->exportData(new ExportPDF($twig), $userRepository, $request);
+
+        return $this->exportData($exportPDF, $userRepository, $request);
     }
 
     private function exportData(ExportInterface $exporter, UserRepository $userRepository, Request $request){
         $with = $request->get('with') ? $request->get('with') : '*';
         $with = explode(',', $with);
         $users = $userRepository->findAll($with);
+
         return $exporter->export($users);
     }
 
@@ -55,6 +58,7 @@ class ExportController extends BaseController
             $value->set(1);
             $value->expiresAfter(30);
             $cache->save($value);
+
             return false;
         }
 
